@@ -1,0 +1,68 @@
+<pf-dropdown hide-arrow class="user-menu">
+    <div slot="button">
+        <pf-image
+            :src="authentication && authentication.profile && authentication.profile.picture"
+            fallbackSrc="assets/img/default-profile.png"
+            class="user-image-small"
+            width="25"
+            height="25"
+            alt="User Image"
+            rounded
+        ></pf-image>
+    </div>
+    <div slot="menu">
+        <li class="user-header bg-primary">
+            <pf-image
+                :src="authentication && authentication.profile && authentication.profile.picture"
+                fallbackSrc="assets/img/default-profile.png"
+                class="user-image-big"
+                alt="User Image"
+                width="90"
+                height="90"
+                rounded
+            ></pf-image>
+
+            <p>
+                <span
+                    >{{authentication && authentication.profile &&
+                    authentication.profile.email}}</span
+                >
+                <small>
+                    <span>{{ $t("labels.memberSince") }}&nbsp;</span>
+                    <span>{{readableCreatedAtDate}}</span>
+                </small>
+            </p>
+        </li>
+        <!-- Menu Body -->
+        <li class="user-body">
+            <div class="row">
+                <div class="col-4 text-center">
+                    <a href="#">{{ $t("labels.followers") }}</a>
+                </div>
+                <div class="col-4 text-center">
+                    <a href="#">{{ $t("labels.sales") }}</a>
+                </div>
+                <div class="col-4 text-center">
+                    <a href="#">{{ $t("labels.friends") }}</a>
+                </div>
+            </div>
+            <!-- /.row -->
+        </li>
+        <!-- Menu Footer-->
+        <li class="user-footer">
+            <router-link
+                to="/profile"
+                class="btn btn-default btn-flat"
+                @click="isDropdownOpened = false;"
+            >
+                {{ $t("labels.profile") }}
+            </router-link>
+            <button
+                @click="logout"
+                class="btn btn-default btn-flat float-right"
+            >
+                {{ $t("labels.signOut") }}
+            </button>
+        </li>
+    </div>
+</pf-dropdown>

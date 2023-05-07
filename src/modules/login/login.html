@@ -1,0 +1,90 @@
+<div class="login-box">
+    <!-- /.login-logo -->
+    <div class="card card-outline card-primary">
+        <div class="card-header text-center">
+            <router-link to="/" class="h1"
+                ><b>{{ $t("labels.admin") }}</b>{{ $t("labels.lte")
+                }}</router-link
+            >
+        </div>
+        <div class="card-body">
+            <p class="login-box-msg">{{ $t("labels.signInToStart") }}</p>
+
+            <form @submit.prevent="loginByAuth">
+                <app-input
+                    icon="envelope"
+                    class="mb-3"
+                    type="email"
+                    placeholder="Email"
+                    autocomplete="off"
+                    v-model="email"
+                />
+                <app-input
+                    icon="lock"
+                    class="mb-3"
+                    type="password"
+                    placeholder="Password"
+                    autocomplete="off"
+                    v-model="password"
+                />
+
+                <div class="row">
+                    <div class="col-7">
+                        <pf-checkbox type="icheck" v-model="rememberMe">
+                            {{ $t("labels.rememberMe") }}
+                        </pf-checkbox>
+                    </div>
+                    <!-- /.col -->
+                    <div class="col-5">
+                        <pf-button
+                            type="submit"
+                            block="true"
+                            :loading="isAuthLoading"
+                            :disabled="isFacebookLoading || isGoogleLoading"
+                        >
+                            {{ $t("labels.signIn") }}
+                        </pf-button>
+                    </div>
+                    <!-- /.col -->
+                </div>
+            </form>
+
+            <div class="social-auth-links text-center mt-2 mb-3">
+                <pf-button
+                    class="mb-2"
+                    block="true"
+                    @click="loginByFacebook"
+                    :loading="isFacebookLoading"
+                    :disabled="isAuthLoading || isGoogleLoading"
+                >
+                    <i class="fab fa-facebook mr-2"></i>
+                    <span> {{ $t("labels.signInUsingFB") }}</span>
+                </pf-button>
+                <pf-button
+                    block="true"
+                    theme="danger"
+                    @click="loginByGoogle"
+                    :loading="isGoogleLoading"
+                    :disabled="isAuthLoading || isFacebookLoading"
+                >
+                    <i class="fab fa-google mr-2"></i>
+                    <span>{{ $t("labels.SignInUsingGoogle") }}</span>
+                </pf-button>
+            </div>
+            <!-- /.social-auth-links -->
+
+            <p class="mb-1">
+                <router-link to="/forgot-password">
+                    {{ $t("labels.forgotPassword") }}
+                </router-link>
+            </p>
+            <p class="mb-0">
+                <router-link to="/register" class="text-center">
+                    {{ $t("labels.registerMembership") }}
+                </router-link>
+            </p>
+        </div>
+        <!-- /.card-body -->
+    </div>
+    <!-- /.card -->
+</div>
