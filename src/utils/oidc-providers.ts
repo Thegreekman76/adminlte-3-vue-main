@@ -1,82 +1,52 @@
 /* eslint-disable no-async-promise-executor */
-import {UserManager, UserManagerSettings} from 'oidc-client-ts';
+//import {UserManager, UserManagerSettings} from 'oidc-client-ts';
 import {sleep} from './helpers';
-
-declare const FB: any;
-
-const GOOGLE_CONFIG: UserManagerSettings = {
-    authority: 'https://accounts.google.com',
-    client_id:
-        '533830427279-cspigijdu0g50c7imca5pvdbrcn2buaq.apps.googleusercontent.com',
-    client_secret: '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',
-    redirect_uri: `${window.location.protocol}//${window.location.host}/callback`,
-    scope: 'openid email profile',
-    loadUserInfo: true
-};
-
-export const GoogleProvider = new UserManager(GOOGLE_CONFIG);
-
-export const facebookLogin = () => {
-    return new Promise((res, rej) => {
-        let authResponse: any;
-        FB.login(
-            (r: any) => {
-                if (r.authResponse) {
-                    authResponse = r.authResponse;
-                    FB.api(
-                        '/me?fields=id,name,email,picture.width(640).height(640)',
-                        (profileResponse: any) => {
-                            authResponse.profile = profileResponse;
-                            authResponse.profile.picture =
-                                profileResponse.picture.data.url;
-                            res(authResponse);
-                        }
-                    );
-                } else {
-                    console.log(
-                        'User cancelled login or did not fully authorize.'
-                    );
-                    rej(undefined);
-                }
-            },
-            {scope: 'public_profile,email'}
-        );
-    });
-};
-
-export const getFacebookLoginStatus = () => {
-    return new Promise((res) => {
-        let authResponse: any = {};
-        FB.getLoginStatus((r: any) => {
-            if (r.authResponse) {
-                authResponse = r.authResponse;
-                FB.api(
-                    '/me?fields=id,name,email,picture.width(640).height(640)',
-                    (profileResponse: any) => {
-                        authResponse.profile = profileResponse;
-                        authResponse.profile.picture =
-                            profileResponse.picture.data.url;
-                        res(authResponse);
-                    }
-                );
-            } else {
-                res(undefined);
-            }
-        });
-    });
-};
+import instance from '@/utils/axios';
+//import {Component, Vue, Watch} from 'vue-facing-decorator';
+//import {IPayload} from '@/interfaces/payload';
 
 export const authLogin = (email: string, password: string) => {
     return new Promise(async (res, rej) => {
         await sleep(500);
-        if (email === 'admin@example.com' && password === 'admin') {
-            localStorage.setItem(
-                'authentication',
-                JSON.stringify({profile: {email: 'admin@example.com'}})
-            );
-            return res({profile: {email: 'admin@example.com'}});
-        }
-        return rej({message: 'Credentials are wrong!'});
+        /* greekman */
+        const payloads = new URLSearchParams();
+        payloads.append('username', email);
+        payloads.append('password', password);
+        await instance
+            .post('login/access-token', payloads)
+            .then(function (response) {
+                console.log(response.data.access_token);
+                // greekman
+                localStorage.setItem(
+                    'payload',
+                    'Bearer: ' + response.data.access_token
+                );
+                console.log('Payload= ' + localStorage.getItem('payload'));
+                localStorage.setItem(
+                    'authentication',
+                    JSON.stringify({profile: {email: email}})
+                );
+                return res({profile: {email: email}});
+            })
+            .catch(function (error) {
+                if (error.response) {
+                    // La respuesta fue hecha y el servidor respondió con un código de estado
+                    // que esta fuera del rango de 2xx
+                    console.log(error.response.data);
+                    return rej({message: 'Credentials are wrong!'});
+                    //console.log(error.response.status);
+                    //console.log(error.response.headers);
+                } else if (error.request) {
+                    // La petición fue hecha pero no se recibió respuesta
+                    // `error.request` es una instancia de XMLHttpRequest en el navegador y una instancia de
+                    // http.ClientRequest en node.js
+                    console.log(error.request);
+                } else {
+                    // Algo paso al preparar la petición que lanzo un Error
+                    console.log('Error', error.message);
+                }
+                console.log(error.config);
+            });
     });
 };
 

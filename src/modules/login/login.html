@@ -29,18 +29,12 @@
                 />
 
                 <div class="row">
-                    <div class="col-7">
-                        <pf-checkbox type="icheck" v-model="rememberMe">
-                            {{ $t("labels.rememberMe") }}
-                        </pf-checkbox>
-                    </div>
                     <!-- /.col -->
-                    <div class="col-5">
+                    <div class="col-12">
                         <pf-button
                             type="submit"
                             block="true"
                             :loading="isAuthLoading"
-                            :disabled="isFacebookLoading || isGoogleLoading"
                         >
                             {{ $t("labels.signIn") }}
                         </pf-button>
@@ -49,40 +43,14 @@
                 </div>
             </form>
 
-            <div class="social-auth-links text-center mt-2 mb-3">
-                <pf-button
-                    class="mb-2"
-                    block="true"
-                    @click="loginByFacebook"
-                    :loading="isFacebookLoading"
-                    :disabled="isAuthLoading || isGoogleLoading"
-                >
-                    <i class="fab fa-facebook mr-2"></i>
-                    <span> {{ $t("labels.signInUsingFB") }}</span>
-                </pf-button>
-                <pf-button
-                    block="true"
-                    theme="danger"
-                    @click="loginByGoogle"
-                    :loading="isGoogleLoading"
-                    :disabled="isAuthLoading || isFacebookLoading"
-                >
-                    <i class="fab fa-google mr-2"></i>
-                    <span>{{ $t("labels.SignInUsingGoogle") }}</span>
-                </pf-button>
-            </div>
-            <!-- /.social-auth-links -->
-
+            <p class="mb-1">
+                &nbsp;
+            </p>
             <p class="mb-1">
                 <router-link to="/forgot-password">
                     {{ $t("labels.forgotPassword") }}
                 </router-link>
-            </p>
-            <p class="mb-0">
-                <router-link to="/register" class="text-center">
-                    {{ $t("labels.registerMembership") }}
-                </router-link>
-            </p>
+            </p>            
         </div>
         <!-- /.card-body -->
     </div>

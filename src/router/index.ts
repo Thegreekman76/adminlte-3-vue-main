@@ -3,20 +3,14 @@ import store from '@/store/index';
 
 import Main from '@/modules/main/main.vue';
 import Login from '@/modules/login/login.vue';
-import Register from '@/modules/register/register.vue';
 
 import Dashboard from '@/pages/dashboard/dashboard.vue';
 import Profile from '@/pages/profile/profile.vue';
 import ForgotPassword from '@/modules/forgot-password/forgot-password.vue';
 import RecoverPassword from '@/modules/recover-password/recover-password.vue';
-import PrivacyPolicy from '@/modules/privacy-policy/privacy-policy.vue';
 import SubMenu from '@/pages/main-menu/sub-menu/sub-menu.vue';
 import Blank from '@/pages/blank/blank.vue';
-import {
-    getAuthStatus,
-    getFacebookLoginStatus,
-    GoogleProvider
-} from '@/utils/oidc-providers';
+import {getAuthStatus} from '@/utils/oidc-providers';
 
 const routes: Array<RouteRecordRaw> = [
     {
@@ -78,14 +72,6 @@ const routes: Array<RouteRecordRaw> = [
         }
     },
     {
-        path: '/register',
-        name: 'Register',
-        component: Register,
-        meta: {
-            requiresUnauth: true
-        }
-    },
-    {
         path: '/forgot-password',
         name: 'ForgotPassword',
         component: ForgotPassword,
@@ -100,11 +86,6 @@ const routes: Array<RouteRecordRaw> = [
         meta: {
             requiresUnauth: true
         }
-    },
-    {
-        path: '/privacy-policy',
-        name: 'RecoverPassword',
-        component: PrivacyPolicy
     }
 ];
 
@@ -131,11 +112,7 @@ export default router;
 
 export async function checkSession() {
     try {
-        let responses: any = await Promise.all([
-            getFacebookLoginStatus(),
-            GoogleProvider.getUser(),
-            getAuthStatus()
-        ]);
+        let responses: any = await Promise.all([getAuthStatus()]);
 
         responses = responses.filter((r: any) => Boolean(r));
 

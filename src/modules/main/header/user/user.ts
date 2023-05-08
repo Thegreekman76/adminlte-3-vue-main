@@ -1,7 +1,6 @@
 import {Component, Vue} from 'vue-facing-decorator';
 import {DateTime} from 'luxon';
 import {PfDropdown, PfImage} from '@profabric/vue-components';
-import {GoogleProvider} from '@/utils/oidc-providers';
 
 declare const FB: any;
 
@@ -20,8 +19,7 @@ export default class User extends Vue {
     async logout() {
         // setDropdownOpen(false);
         try {
-            if (this.authentication.profile.first_name) {
-                await GoogleProvider.signoutPopup();
+            if (this.authentication.profile.email) {
                 this.$store.dispatch('auth/setAuthentication', undefined);
             } else if (this.authentication.userID) {
                 FB.logout(() => {
@@ -30,9 +28,11 @@ export default class User extends Vue {
                 });
             }
             localStorage.removeItem('authentication');
+            localStorage.removeItem('payload');
             this.$router.replace('/login');
         } catch (error) {
             localStorage.removeItem('authentication');
+            localStorage.removeItem('payload');
             this.$router.replace('/login');
         }
     }
