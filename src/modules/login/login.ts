@@ -4,6 +4,7 @@ import Input from '@/components/input/input.vue';
 import {useToast} from 'vue-toastification';
 import {PfButton, PfCheckbox} from '@profabric/vue-components';
 import {authLogin} from '@/utils/oidc-providers';
+import { getLocalToken, removeLocalToken, saveLocalToken } from '@/utils/helpers';
 
 @Component({
     components: {
@@ -36,8 +37,9 @@ export default class Login extends Vue {
             this.$store.dispatch('auth/setAuthentication', response);
             this.$store.dispatch(
                 'payload/setPayload',
-                localStorage.getItem('payload')
+               getLocalToken()
             );
+            //console.log(this.$store.getters['user/user']);
             this.toast.success('Login succeeded');
             this.isAuthLoading = false;
             this.$router.replace('/');

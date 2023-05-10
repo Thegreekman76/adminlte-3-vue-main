@@ -1,52 +1,36 @@
 /* eslint-disable no-async-promise-executor */
-//import {UserManager, UserManagerSettings} from 'oidc-client-ts';
-import {sleep} from './helpers';
-import instance from '@/utils/axios';
-//import {Component, Vue, Watch} from 'vue-facing-decorator';
-//import {IPayload} from '@/interfaces/payload';
+import {sleep, saveLocalToken, getLocalToken} from './helpers';
+import {api} from '@/api';
+import $store from '@/store';
 
 export const authLogin = (email: string, password: string) => {
     return new Promise(async (res, rej) => {
         await sleep(500);
         /* greekman */
-        const payloads = new URLSearchParams();
-        payloads.append('username', email);
-        payloads.append('password', password);
-        await instance
-            .post('login/access-token', payloads)
-            .then(function (response) {
-                console.log(response.data.access_token);
-                // greekman
-                localStorage.setItem(
-                    'payload',
-                    'Bearer: ' + response.data.access_token
-                );
-                console.log('Payload= ' + localStorage.getItem('payload'));
+        try {
+            const response = await api.logInGetToken(email, password);
+            const token = response.data.access_token;
+            if (token) {
+                saveLocalToken(response.data.access_token);
                 localStorage.setItem(
                     'authentication',
                     JSON.stringify({profile: {email: email}})
                 );
-                return res({profile: {email: email}});
-            })
-            .catch(function (error) {
-                if (error.response) {
-                    // La respuesta fue hecha y el servidor respondió con un código de estado
-                    // que esta fuera del rango de 2xx
-                    console.log(error.response.data);
-                    return rej({message: 'Credentials are wrong!'});
-                    //console.log(error.response.status);
-                    //console.log(error.response.headers);
-                } else if (error.request) {
-                    // La petición fue hecha pero no se recibió respuesta
-                    // `error.request` es una instancia de XMLHttpRequest en el navegador y una instancia de
-                    // http.ClientRequest en node.js
-                    console.log(error.request);
-                } else {
-                    // Algo paso al preparar la petición que lanzo un Error
-                    console.log('Error', error.message);
+                try {
+                    const response = await api.getMe(getLocalToken());
+                    if (response.data) {
+                        $store.dispatch('user/setUser', response);
+                    }
+                } catch (error) {
+                    return rej({message: 'Credentssssals are wrong!'});
                 }
-                console.log(error.config);
-            });
+                return res({profile: {email: email}});
+            } else {
+                return rej({message: 'Credentials are wrong!'});
+            }
+        } catch (error) {
+            return rej({message: 'Credentials are wrong!'});
+        }
     });
 };
 
