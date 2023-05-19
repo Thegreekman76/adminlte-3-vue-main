@@ -21,6 +21,7 @@
         "luxon": "3.3.0",
         "oidc-client-ts": "^2.2.3",
         "summernote": "./summernote",
+        "typesafe-vuex": "^3.2.2",
         "uuid": "9.0.0",
         "vue": "3.2.47",
         "vue-facing-decorator": "^2.1.20",

@@ -1,34 +1,23 @@
 /* eslint-disable no-async-promise-executor */
+import router from '@/router';
 import {sleep, saveLocalToken, getLocalToken} from './helpers';
-import {api} from '@/api';
+//import {api} from '@/api';
 import $store from '@/store';
+import {dispatchLogIn} from '@/store/main/actions';
 
 export const authLogin = (email: string, password: string) => {
     return new Promise(async (res, rej) => {
         await sleep(500);
-        /* greekman */
-        try {
-            const response = await api.logInGetToken(email, password);
-            const token = response.data.access_token;
-            if (token) {
-                saveLocalToken(response.data.access_token);
-                localStorage.setItem(
-                    'authentication',
-                    JSON.stringify({profile: {email: email}})
-                );
-                try {
-                    const response = await api.getMe(getLocalToken());
-                    if (response.data) {
-                        $store.dispatch('user/setUser', response);
-                    }
-                } catch (error) {
-                    return rej({message: 'Credentssssals are wrong!'});
-                }
-                return res({profile: {email: email}});
-            } else {
-                return rej({message: 'Credentials are wrong!'});
-            }
-        } catch (error) {
+
+        dispatchLogIn($store, {username: email, password});
+        
+        if (getLocalToken() != null) {
+            localStorage.setItem(
+                'authentication',
+                JSON.stringify({profile: {email: email}})
+            );
+            return res({profile: {email: email}});
+        } else {
             return rej({message: 'Credentials are wrong!'});
         }
     });

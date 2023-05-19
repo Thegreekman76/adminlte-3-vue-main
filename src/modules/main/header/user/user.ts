@@ -1,6 +1,7 @@
 import {Component, Vue} from 'vue-facing-decorator';
 import {DateTime} from 'luxon';
 import {PfDropdown, PfImage} from '@profabric/vue-components';
+import { removeLocalToken } from '@/utils/helpers';
 
 declare const FB: any;
 
@@ -28,11 +29,11 @@ export default class User extends Vue {
                 });
             }
             localStorage.removeItem('authentication');
-            localStorage.removeItem('payload');
+            removeLocalToken();
             this.$router.replace('/login');
         } catch (error) {
             localStorage.removeItem('authentication');
-            localStorage.removeItem('payload');
+            //localStorage.removeItem('payload');
             this.$router.replace('/login');
         }
     }

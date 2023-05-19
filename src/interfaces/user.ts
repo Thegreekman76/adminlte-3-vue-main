@@ -17,11 +17,6 @@ export interface IUser {
     is_superuser: boolean;
     full_name: string;
     id: number;
-
-    namespaced: boolean;
-    mutations: any;
-    actions: any;
-    getters: any;
 }
 
 export interface IUserUpdate {
